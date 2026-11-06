@@ -1,3 +1,4 @@
+{
 "_meta": { "name": "Deutsch" },
 "screen": {
   "choose_sensor": "Sensor wählen",
@@ -12,3 +13,4 @@
   "sensor": "CO₂-Sensor",
   "sensor_hint": "Wähle den CO₂-Sensor für diese Kachel."
 }
+
