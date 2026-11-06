@@ -87,34 +87,43 @@ class Co2Tile : public tessera::Tile {
     const bool available = std::isfinite(ppm_);
     const std::string text = available ? std::to_string(static_cast<int>(std::lround(ppm_))) :
         (sensor_hint_.empty() ? plugin_->text("choose_sensor") : plugin_->text("unavailable"));
-    const bool side_layout = width_ >= 220 && height_ >= 145;
+    const bool centered_gauge = width_ >= 220 && height_ >= 145;
     const int label_zoom = std::clamp(label_scale_, 75, 150) * 256 / 100;
     lv_obj_set_style_transform_zoom(unit_, label_zoom, 0);
     lv_obj_set_style_transform_zoom(center_, label_zoom, 0);
     ui::set_text(unit_, available ? plugin_->text("ppm") : "");
     ui::set_text(center_, available ? "CO2" : "");
 
-    const int ring_area_width = side_layout ? width_ * 72 / 100 : width_ - 10;
-    int ring_limit = side_layout
-                         ? std::max(48, std::min(ring_area_width, height_ - 12))
-                         : 48;
-    if (side_layout) {
-      ring_size_ = std::max(48, ring_limit * std::clamp(ring_scale_, 50, 100) / 100);
+    int ring_limit;
+    if (centered_gauge) {
+      ring_limit = std::max(48, std::min(width_ - 10, height_ - 12));
+    } else {
+      // First fit the compact number; the ring uses whatever height remains above it.
+      ring_limit = 48;
     }
+    if (centered_gauge)
+      ring_size_ = std::max(48, ring_limit * std::clamp(ring_scale_, 50, 100) / 100);
 
     const int desired_zoom = std::clamp(value_scale_, 100, 200) * 256 / 100;
-    const int value_fit_width = side_layout ? ring_size_ * 66 / 100 : width_ - 12;
-    tessera::Font face = tessera::Font::TITLE;
-    int value_zoom = desired_zoom;
+    const int fit_width = centered_gauge ? ring_size_ * 68 / 100 : width_ - 12;
+    const int fit_height = centered_gauge ? ring_size_ * 34 / 100 : height_ / 2;
+    tessera::Font face = tessera::Font::VALUE;
+    int value_zoom = 128;
+    int best_height = 0;
     for (tessera::Font candidate : {tessera::Font::VALUE, tessera::Font::HEADLINE, tessera::Font::TITLE}) {
-      if (ui::text_width(text, candidate) * desired_zoom / 256 <= value_fit_width) {
+      const int base_width = ui::text_width(text, candidate);
+      const int base_height = ui::line_height(candidate);
+      if (base_width <= 0 || base_height <= 0) continue;
+      const int width_zoom = fit_width * 256 / base_width;
+      const int height_zoom = fit_height * 256 / base_height;
+      const int candidate_zoom = std::min(desired_zoom, std::min(width_zoom, height_zoom));
+      const int rendered_height = base_height * candidate_zoom / 256;
+      if (candidate_zoom >= 128 && rendered_height > best_height) {
         face = candidate;
-        break;
+        value_zoom = candidate_zoom;
+        best_height = rendered_height;
       }
     }
-    const int base_value_width = ui::text_width(text, face);
-    if (base_value_width > 0 && base_value_width * value_zoom / 256 > value_fit_width)
-      value_zoom = std::max(128, value_fit_width * 256 / base_value_width);
     ui::set_font(value_, face);
     ui::set_text(value_, text);
     lv_obj_set_style_transform_zoom(value_, value_zoom, 0);
@@ -122,39 +131,39 @@ class Co2Tile : public tessera::Tile {
     const int value_height = (ui::line_height(face) * value_zoom + 255) / 256;
     const int label_height = (ui::line_height(tessera::Font::BODY) * label_zoom + 255) / 256;
     const int unit_height = available ? label_height : 0;
-    if (!side_layout) {
+    if (!centered_gauge) {
       ring_limit = std::max(48, std::min(width_ - 10, height_ - value_height - unit_height - 18));
       ring_size_ = std::max(48, ring_limit * std::clamp(ring_scale_, 50, 100) / 100);
     }
-    ring_x_ = side_layout ? (ring_area_width - ring_size_) / 2 : (width_ - ring_size_) / 2;
-    ring_y_ = side_layout ? std::max(0, (height_ - ring_size_) / 2)
-                          : std::max(0, (ring_limit - ring_size_) / 2);
+    ring_x_ = (width_ - ring_size_) / 2;
+    ring_y_ = centered_gauge ? std::max(0, (height_ - ring_size_) / 2)
+                            : std::max(0, (ring_limit - ring_size_) / 2);
     lv_obj_set_size(arc_, ring_size_, ring_size_);
     lv_obj_set_pos(arc_, ring_x_, ring_y_);
     const int arc_width = std::max(6, ring_size_ / 14);
     lv_obj_set_style_arc_width(arc_, arc_width, LV_PART_MAIN);
     lv_obj_set_style_arc_width(arc_, arc_width, LV_PART_INDICATOR);
 
-    if (side_layout) {
-      // Large tiles show the ppm value inside the ring, with CO2 and ppm in a column beside it.
-      const int value_width = std::max(1, ring_size_ * 66 / 100);
+    if (centered_gauge) {
+      // Large tiles keep the gauge centred. CO2 sits at its upper left; the value and ppm stay together in the middle.
+      const int value_width = std::max(1, ring_size_ * 68 / 100);
       lv_obj_set_width(value_, value_width);
       lv_obj_set_style_text_align(value_, LV_TEXT_ALIGN_CENTER, 0);
-      lv_obj_set_pos(value_, ring_x_ + (ring_size_ - value_width) / 2,
-                     ring_y_ + (ring_size_ - value_height) / 2);
+      const int group_height = value_height + unit_height;
+      const int value_y = ring_y_ + (ring_size_ - group_height) / 2;
+      lv_obj_set_pos(value_, ring_x_ + (ring_size_ - value_width) / 2, value_y);
       lv_obj_set_height(value_, value_height + 2);
-      const int right_x = ring_area_width + 8;
-      const int right_width = std::max(1, width_ - right_x - 6);
-      lv_obj_set_width(center_, right_width);
-      lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_LEFT, 0);
-      lv_obj_set_pos(center_, right_x, height_ / 2 - label_height - 2);
-      lv_obj_set_height(center_, label_height);
-      lv_obj_set_width(unit_, right_width);
-      lv_obj_set_style_text_align(unit_, LV_TEXT_ALIGN_LEFT, 0);
-      lv_obj_set_pos(unit_, right_x, height_ / 2 + 2);
+      lv_obj_set_width(unit_, value_width);
+      lv_obj_set_style_text_align(unit_, LV_TEXT_ALIGN_CENTER, 0);
+      lv_obj_set_pos(unit_, ring_x_ + (ring_size_ - value_width) / 2, value_y + value_height - 1);
       lv_obj_set_height(unit_, std::max(1, unit_height));
+      const int co2_width = ring_size_ * 48 / 100;
+      lv_obj_set_width(center_, co2_width);
+      lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_LEFT, 0);
+      lv_obj_set_pos(center_, ring_x_ + ring_size_ * 23 / 100, ring_y_ + ring_size_ * 18 / 100);
+      lv_obj_set_height(center_, label_height);
     } else {
-      // Compact tiles stack the ring, value and unit to preserve space for the large number.
+      // Compact tiles stack the ring, value and unit.
       lv_obj_set_width(center_, ring_size_ * 3 / 5);
       lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_CENTER, 0);
       lv_obj_set_pos(center_, ring_x_ + ring_size_ / 5,
@@ -218,6 +227,7 @@ void Co2Ring::setup() {
 }
 
 }  // namespace esphome::co2_ring
+
 
 
 
