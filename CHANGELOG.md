@@ -1,3 +1,8 @@
+## 0.2.15
+
+- Show the three colour ranges as a thin segmented frame along the gauge ring.
+- Expand the PPM value's usable area so settings above 200% can render larger.
+
 ## 0.2.14
 
 - Allow the PPM value size to scale up to 300%.
