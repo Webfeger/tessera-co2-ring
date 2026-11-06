@@ -6,22 +6,22 @@
     "ppm": "ppm"
   },
   "app": {
-    "name": "CO₂ Ring",
-    "summary": "CO₂-Konzentration mit farbiger Ringskala und großem ppm-Wert.",
-    "tile_name": "CO₂ Ring",
+    "name": "CO2 Ring",
+    "summary": "CO2-Konzentration mit farbiger Ringskala und großem ppm-Wert.",
+    "tile_name": "CO2 Ring",
     "tile_example": "734 ppm",
-    "sensor": "CO₂-Sensor",
+    "sensor": "CO2-Sensor",
     "sensor_hint": "Wähle einen Sensor, eine Air-Quality-Entität oder einen Zahlenwert.",
     "low_threshold": "Untere Schwelle",
     "low_threshold_hint": "Bis zu diesem Wert gilt die erste Farbe.",
     "high_threshold": "Obere Schwelle",
     "high_threshold_hint": "Ab diesem Wert gilt die dritte Farbe.",
     "low_color": "Farbe unter der unteren Schwelle",
-    "low_color_hint": "Farbe für niedrige CO₂-Werte.",
+    "low_color_hint": "Farbe für niedrige CO2-Werte.",
     "mid_color": "Farbe zwischen den Schwellen",
-    "mid_color_hint": "Farbe für mittlere CO₂-Werte.",
+    "mid_color_hint": "Farbe für mittlere CO2-Werte.",
     "high_color": "Farbe ab der oberen Schwelle",
-    "high_color_hint": "Farbe für hohe CO₂-Werte.",
+    "high_color_hint": "Farbe für hohe CO2-Werte.",
     "ring_scale": "Ringgröße",
     "ring_scale_hint": "Ringskala verkleinern, relativ zur größten passenden Größe.",
     "value_scale": "Größe des ppm-Werts",
@@ -38,4 +38,5 @@
     "color_purple": "Violett"
   }
 }
+
 

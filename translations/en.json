@@ -6,22 +6,22 @@
     "ppm": "ppm"
   },
   "app": {
-    "name": "CO₂ Ring",
-    "summary": "CO₂ concentration with a colour ring and a large ppm value.",
-    "tile_name": "CO₂ Ring",
+    "name": "CO2 Ring",
+    "summary": "CO2 concentration with a colour ring and a large ppm value.",
+    "tile_name": "CO2 Ring",
     "tile_example": "734 ppm",
-    "sensor": "CO₂ source",
+    "sensor": "CO2 source",
     "sensor_hint": "Choose a sensor, air quality entity or number entity.",
     "low_threshold": "Lower threshold",
     "low_threshold_hint": "Values below this use the first colour.",
     "high_threshold": "Upper threshold",
     "high_threshold_hint": "Values at or above this use the third colour.",
     "low_color": "Colour below lower threshold",
-    "low_color_hint": "Colour for low CO₂ values.",
+    "low_color_hint": "Colour for low CO2 values.",
     "mid_color": "Colour between thresholds",
-    "mid_color_hint": "Colour for medium CO₂ values.",
+    "mid_color_hint": "Colour for medium CO2 values.",
     "high_color": "Colour at or above upper threshold",
-    "high_color_hint": "Colour for high CO₂ values.",
+    "high_color_hint": "Colour for high CO2 values.",
     "ring_scale": "Ring size",
     "ring_scale_hint": "Make the gauge smaller than its largest fitting size.",
     "value_scale": "PPM value size",
@@ -38,4 +38,5 @@
     "color_purple": "Purple"
   }
 }
+
 

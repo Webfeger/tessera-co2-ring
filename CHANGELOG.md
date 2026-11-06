@@ -1,3 +1,7 @@
+## 0.2.7
+
+- Use the screen font's supported CO2 spelling in plugin labels.
+
 ## 0.2.6
 
 - Keep the ring centred as text scales; place CO2 at the upper left of the ring and ppm below the value.
@@ -25,6 +29,7 @@
 - Add per-tile lower and upper ppm thresholds and selectable colours for all three ranges.
 - Expand the entity picker to sensor, air_quality and number domains.
 - Keep tile sizes from 1x1 through the display's maximum 2x3 grid.
+
 
 
 
