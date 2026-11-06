@@ -1,5 +1,5 @@
 id: co2_ring
-version: 0.2.10
+version: 0.2.11
 api: "0.15"
 icon: molecule-co2
 maintainer: Webfeger
@@ -21,12 +21,15 @@ tiles:
       - { id: sensor, kind: entity, domains: [sensor, air_quality, number], label: sensor, hint: sensor_hint }
       - { id: low_threshold, kind: number, min: 400, max: 3000, step: 50, unit: ppm, default: 800, label: low_threshold, hint: low_threshold_hint }
       - { id: high_threshold, kind: number, min: 450, max: 5000, step: 50, unit: ppm, default: 1200, label: high_threshold, hint: high_threshold_hint }
+      - { id: ring_min, kind: number, min: 0, max: 5000, step: 50, unit: ppm, default: 400, label: ring_min, hint: ring_min_hint }
+      - { id: ring_max, kind: number, min: 500, max: 10000, step: 50, unit: ppm, default: 2000, label: ring_max, hint: ring_max_hint }
       - { id: low_color, kind: choice, choices: [{ value: green, label: color_green }, { value: lime, label: color_lime }, { value: teal, label: color_teal }, { value: blue, label: color_blue }, { value: yellow, label: color_yellow }, { value: orange, label: color_orange }, { value: red, label: color_red }, { value: purple, label: color_purple }], default: green, label: low_color, hint: low_color_hint }
       - { id: mid_color, kind: choice, choices: [{ value: green, label: color_green }, { value: lime, label: color_lime }, { value: teal, label: color_teal }, { value: blue, label: color_blue }, { value: yellow, label: color_yellow }, { value: orange, label: color_orange }, { value: red, label: color_red }, { value: purple, label: color_purple }], default: yellow, label: mid_color, hint: mid_color_hint }
       - { id: high_color, kind: choice, choices: [{ value: green, label: color_green }, { value: lime, label: color_lime }, { value: teal, label: color_teal }, { value: blue, label: color_blue }, { value: yellow, label: color_yellow }, { value: orange, label: color_orange }, { value: red, label: color_red }, { value: purple, label: color_purple }], default: red, label: high_color, hint: high_color_hint }
       - { id: ring_scale, kind: number, min: 50, max: 100, step: 5, unit: "%", default: 100, label: ring_scale, hint: ring_scale_hint }
       - { id: value_scale, kind: number, min: 100, max: 200, step: 10, unit: "%", default: 180, label: value_scale, hint: value_scale_hint }
       - { id: label_scale, kind: number, min: 75, max: 150, step: 5, unit: "%", default: 100, label: label_scale, hint: label_scale_hint }
+      - { id: text_offset, kind: text, default: "0,0", label: text_offset, hint: text_offset_hint }
 
 
 

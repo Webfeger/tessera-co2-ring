@@ -1,3 +1,9 @@
+## 0.2.11
+
+- Set the ring's start and full values, defaulting to 400–2000 ppm.
+- Move the text group horizontally and vertically from the tile settings.
+- Use a black tile background and black inactive ring track.
+
 ## 0.2.10
 
 - Remove the duplicate generic Entity selector; keep the CO2 source selector.

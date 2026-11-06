@@ -7,8 +7,8 @@ A Tessera tile for a Home Assistant CO₂ value. It shows a colour gauge and a l
 1. Add this plugin to the screen in Tessera and install the build.
 2. In Layout, place **CO₂ Ring** from the Plugins group.
 3. Choose the entity for this tile. The picker supports `sensor`, `air_quality` and `number` entities.
-4. Set the two ppm thresholds and choose a colour for each of the three ranges. Adjust the ring, value and label sizes in the tile options.
+4. Set the two colour thresholds, the ring's minimum and maximum ppm values, and a colour for each range. Adjust the ring and text sizes in the tile options. **Text position (X,Y)** moves the text group by a percentage of the tile size; for example, `5,-3` moves it right and slightly up. The tile background is black.
 
-The tile supports sizes from 1×1 through 3×3 where the screen grid allows them. On a 2-column × 3-row display, 2×3 fills the page; 3×3 is limited by the screen grid. The gauge fills over 400–2000 ppm; values outside that display range stay visible while the gauge stops at its end.
+The gauge defaults to 400–2000 ppm; values outside the selected range stay visible while the gauge stops at its end. Tile sizes are subject to the screen grid and Tessera's layout rules; plugin tiles cannot currently occupy an entire page.
 
 
