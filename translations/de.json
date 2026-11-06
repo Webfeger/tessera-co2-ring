@@ -25,7 +25,7 @@
     "ring_scale": "Ringgröße",
     "ring_scale_hint": "Ringskala verkleinern, relativ zur größten passenden Größe.",
     "value_layout": "PPM-Position und -Größe",
-    "value_layout_hint": "X;Y;Größe, z. B. 0;15;180. X/Y verschieben die Zahl von ihrer zentrierten Grundposition, in Prozent der Kachelgröße.",
+    "value_layout_hint": "X;Y;Größe, z. B. 0;15;180. Größe in Prozent (bis 300); X/Y verschieben die Zahl von ihrer zentrierten Grundposition, bezogen auf die Kachelgröße.",
     "co2_layout": "CO2-Position und -Größe",
     "co2_layout_hint": "X;Y;Größe, z. B. 0;0;100. CO2 steht standardmäßig oben links außerhalb des Rings.",
     "unit_layout": "ppm-Position und -Größe",

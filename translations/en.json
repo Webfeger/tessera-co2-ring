@@ -25,7 +25,7 @@
     "ring_scale": "Ring size",
     "ring_scale_hint": "Make the gauge smaller than its largest fitting size.",
     "value_layout": "PPM Position and Size",
-    "value_layout_hint": "X;Y;size, for example 0;15;180. X/Y shift the number from its centred position, as a percent of tile size.",
+    "value_layout_hint": "X;Y;size, for example 0;15;180. Size is a percentage (up to 300); X/Y shift the number from its centred position, relative to tile size.",
     "co2_layout": "CO2 Position and Size",
     "co2_layout_hint": "X;Y;size, for example 0;0;100. CO2 starts at the upper left, outside the ring.",
     "unit_layout": "ppm Position and Size",

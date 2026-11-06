@@ -20,7 +20,7 @@ static TextLayout parse_text_layout(const std::string &text, TextLayout fallback
   int y = fallback.y;
   int size = fallback.size;
   if (std::sscanf(text.c_str(), "%d;%d;%d", &x, &y, &size) != 3) return fallback;
-  return {std::clamp(x, -50, 50), std::clamp(y, -50, 50), std::clamp(size, 50, 250)};
+  return {std::clamp(x, -50, 50), std::clamp(y, -50, 50), std::clamp(size, 50, 350)};
 }
 
 static void parse_pair(const std::string &text, float &first, float &second) {
@@ -68,7 +68,7 @@ class Co2Tile : public tessera::Tile {
     value_layout_ = parse_text_layout(c.options["value_layout"] | "0;15;180", {0, 15, 180});
     co2_layout_ = parse_text_layout(c.options["co2_layout"] | "0;0;100", {0, 0, 100});
     unit_layout_ = parse_text_layout(c.options["unit_layout"] | "0;0;100", {0, 0, 100});
-    value_layout_.size = std::clamp(value_layout_.size, 100, 200);
+    value_layout_.size = std::clamp(value_layout_.size, 100, 300);
     co2_layout_.size = std::clamp(co2_layout_.size, 75, 150);
     unit_layout_.size = std::clamp(unit_layout_.size, 75, 150);
 
@@ -90,6 +90,9 @@ class Co2Tile : public tessera::Tile {
     lv_obj_set_style_arc_opa(arc_, LV_OPA_COVER, LV_PART_MAIN);
     lv_obj_set_style_opa(arc_, LV_OPA_TRANSP, LV_PART_KNOB);
     lv_obj_remove_flag(arc_, LV_OBJ_FLAG_CLICKABLE);
+
+    low_marker_ = create_threshold_marker(c.parent);
+    high_marker_ = create_threshold_marker(c.parent);
 
     center_ = ui::label(c.parent, tessera::Font::BODY, theme::INK);
     lv_obj_set_width(center_, ring_size_ * 3 / 5);
@@ -122,7 +125,7 @@ class Co2Tile : public tessera::Tile {
     const std::string text = available ? std::to_string(static_cast<int>(std::lround(ppm_))) :
         (sensor_hint_.empty() ? plugin_->text("choose_sensor") : plugin_->text("unavailable"));
     const bool centered_gauge = width_ >= 220 && height_ >= 145;
-    const int desired_value_zoom = std::clamp(value_layout_.size, 100, 200) * 256 / 100;
+    const int desired_value_zoom = std::clamp(value_layout_.size, 100, 300) * 256 / 100;
     const int co2_zoom = co2_layout_.size * 256 / 100;
     const int unit_zoom = unit_layout_.size * 256 / 100;
     const int co2_height = (ui::line_height(tessera::Font::BODY) * co2_zoom + 255) / 256;
@@ -191,6 +194,8 @@ class Co2Tile : public tessera::Tile {
     const int arc_width = std::max(6, ring_size_ / 14);
     lv_obj_set_style_arc_width(arc_, arc_width, LV_PART_MAIN);
     lv_obj_set_style_arc_width(arc_, arc_width, LV_PART_INDICATOR);
+    update_threshold_marker(low_marker_, low_threshold_, mid_color_);
+    update_threshold_marker(high_marker_, high_threshold_, high_color_);
 
     if (centered_gauge) {
       // CO2 sits above and outside the ring; the value and ppm stay together in the middle.
@@ -266,6 +271,36 @@ class Co2Tile : public tessera::Tile {
     }
   }
  private:
+  lv_obj_t *create_threshold_marker(lv_obj_t *parent) {
+    lv_obj_t *marker = lv_obj_create(parent);
+    lv_obj_remove_style_all(marker);
+    lv_obj_set_size(marker, 12, 12);
+    lv_obj_set_style_radius(marker, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_opa(marker, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(marker, 2, 0);
+    lv_obj_set_style_border_color(marker, lv_color_white(), 0);
+    lv_obj_remove_flag(marker, LV_OBJ_FLAG_CLICKABLE);
+    return marker;
+  }
+
+  void update_threshold_marker(lv_obj_t *marker, float threshold, const std::string &color_name) {
+    if (threshold < ring_min_ || threshold > ring_max_) {
+      lv_obj_add_flag(marker, LV_OBJ_FLAG_HIDDEN);
+      return;
+    }
+    lv_obj_remove_flag(marker, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_style_bg_color(marker, named_color(color_name), 0);
+    const float fraction = (threshold - ring_min_) / (ring_max_ - ring_min_);
+    const float angle = (135.0f + 270.0f * fraction) * 0.01745329252f;
+    const float radius = ring_size_ / 2.0f;
+    const int center_x = ring_x_ + ring_size_ / 2;
+    const int center_y = ring_y_ + ring_size_ / 2;
+    const int marker_size = 12;
+    const int x = center_x + static_cast<int>(std::lround(radius * std::cos(angle))) - marker_size / 2;
+    const int y = center_y - static_cast<int>(std::lround(radius * std::sin(angle))) - marker_size / 2;
+    lv_obj_set_pos(marker, x, y);
+  }
+
   const tessera::Plugin *plugin_;
   int width_ = 0, height_ = 0, ring_size_ = 0, ring_x_ = 0, ring_y_ = 0;
   std::string sensor_hint_;
@@ -276,6 +311,8 @@ class Co2Tile : public tessera::Tile {
   TextLayout value_layout_{0, 15, 180}, co2_layout_{0, 0, 100}, unit_layout_{0, 0, 100};
   std::string low_color_ = "green", mid_color_ = "yellow", high_color_ = "red";
   lv_obj_t *arc_ = nullptr;
+  lv_obj_t *low_marker_ = nullptr;
+  lv_obj_t *high_marker_ = nullptr;
   lv_obj_t *center_ = nullptr;
   lv_obj_t *value_ = nullptr;
   lv_obj_t *unit_ = nullptr;

@@ -1,3 +1,8 @@
+## 0.2.14
+
+- Allow the PPM value size to scale up to 300%.
+- Add coloured markers at the configured lower and upper colour thresholds on the ring.
+
 ## 0.2.13
 
 - Give the PPM value, CO2 label and ppm unit separate X;Y;size settings; place CO2 above the ring.
