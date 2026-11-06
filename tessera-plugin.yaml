@@ -17,10 +17,10 @@ tiles:
     sizes: { min: 1x1, max: 2x2 }
     memory: 900
     example: tile_example
-    preview: { value: "{state}" }
     options:
       - id: sensor
         kind: entity
         domains: [sensor]
         label: sensor
         hint: sensor_hint
+
