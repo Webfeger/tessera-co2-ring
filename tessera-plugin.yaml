@@ -1,5 +1,5 @@
 id: co2_ring
-version: 0.2.8
+version: 0.2.10
 api: "0.15"
 icon: molecule-co2
 maintainer: Webfeger
@@ -16,10 +16,7 @@ tiles:
     icon: molecule-co2
     sizes: { min: 1x1, max: 4x4 }
     memory: 900
-    domains: [sensor]
-    attributes: [unit_of_measurement, device_class, icon]
     example: tile_example
-    preview: { title: "{name}", value: "{state}" }
     options:
       - { id: sensor, kind: entity, domains: [sensor, air_quality, number], label: sensor, hint: sensor_hint }
       - { id: low_threshold, kind: number, min: 400, max: 3000, step: 50, unit: ppm, default: 800, label: low_threshold, hint: low_threshold_hint }

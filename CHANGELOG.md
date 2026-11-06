@@ -1,7 +1,11 @@
+## 0.2.10
+
+- Remove the duplicate generic Entity selector; keep the CO2 source selector.
+
 ## 0.2.9
 
-- Add entity domains and sample preview data so Tessera can draw the tile from a CO2 sensor.
-- Include 2x3 and other tile sizes in the firmware preview bench.
+- Keep one CO2 source selector in the tile settings instead of duplicating it with Tessera's generic Entity selector.
+- Add sample sensor data and tile sizes for the firmware preview bench.
 
 ## 0.2.8
 
