@@ -22,6 +22,12 @@
     "mid_color_hint": "Farbe für mittlere CO₂-Werte.",
     "high_color": "Farbe ab der oberen Schwelle",
     "high_color_hint": "Farbe für hohe CO₂-Werte.",
+    "ring_scale": "Ringgröße",
+    "ring_scale_hint": "Ringskala verkleinern, relativ zur größten passenden Größe.",
+    "value_scale": "Größe des ppm-Werts",
+    "value_scale_hint": "Skaliert die große Zahl; auf kleinen Kacheln wird sie automatisch begrenzt.",
+    "label_scale": "Größe der Beschriftungen",
+    "label_scale_hint": "Skaliert CO2-Kürzel und ppm-Einheit.",
     "color_green": "Grün",
     "color_lime": "Hellgrün",
     "color_teal": "Türkis",
@@ -32,3 +38,4 @@
     "color_purple": "Violett"
   }
 }
+

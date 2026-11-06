@@ -34,6 +34,9 @@ class Co2Tile : public tessera::Tile {
     mid_color_ = c.options["mid_color"] | "yellow";
     high_color_ = c.options["high_color"] | "red";
     if (high_threshold_ <= low_threshold_) high_threshold_ = low_threshold_ + 50.0f;
+    ring_scale_ = c.options["ring_scale"] | 100;
+    value_scale_ = c.options["value_scale"] | 180;
+    label_scale_ = c.options["label_scale"] | 100;
 
     // Gauge size follows the tile dimensions, with the large value kept below it.
     ring_size_ = std::max(48, std::min(width_ - 10, height_ - 64));
@@ -85,30 +88,61 @@ class Co2Tile : public tessera::Tile {
     const std::string text = available ? std::to_string(static_cast<int>(std::lround(ppm_))) :
         (sensor_hint_.empty() ? plugin_->text("choose_sensor") : plugin_->text("unavailable"));
 
-    tessera::Font face = tessera::Font::VALUE;
+    const int desired_zoom = std::clamp(value_scale_, 100, 200) * 256 / 100;
+    tessera::Font face = tessera::Font::TITLE;
+    int value_zoom = desired_zoom;
     for (tessera::Font candidate : {tessera::Font::VALUE, tessera::Font::HEADLINE, tessera::Font::TITLE}) {
-      face = candidate;
-      if (ui::text_width(text, candidate) <= width_ - 8) break;
+      if (ui::text_width(text, candidate) * desired_zoom / 256 <= width_ - 12) {
+        face = candidate;
+        break;
+      }
     }
+    const int base_value_width = ui::text_width(text, face);
+    if (base_value_width > 0 && base_value_width * value_zoom / 256 > width_ - 12)
+      value_zoom = std::max(128, (width_ - 12) * 256 / base_value_width);
     ui::set_font(value_, face);
     ui::set_text(value_, text);
+    lv_obj_set_style_transform_zoom(value_, value_zoom, 0);
+
+    const int label_zoom = std::clamp(label_scale_, 75, 150) * 256 / 100;
+    lv_obj_set_style_transform_zoom(unit_, label_zoom, 0);
+    lv_obj_set_style_transform_zoom(center_, label_zoom, 0);
     ui::set_text(unit_, available ? plugin_->text("ppm") : "");
     ui::set_text(center_, available ? "CO2" : "");
 
-    const int value_height = ui::line_height(face);
-    const int unit_height = available ? ui::line_height(tessera::Font::BODY) : 0;
-    const int value_y = std::min(height_ - value_height - unit_height, ring_y_ + ring_size_ + 1);
+    const int value_height = (ui::line_height(face) * value_zoom + 255) / 256;
+    const int label_height = (ui::line_height(tessera::Font::BODY) * label_zoom + 255) / 256;
+    const int unit_height = available ? label_height : 0;
+    const int ring_limit = std::max(48, std::min(width_ - 10, height_ - value_height - unit_height - 18));
+    ring_size_ = std::max(48, ring_limit * std::clamp(ring_scale_, 50, 100) / 100);
+    ring_x_ = (width_ - ring_size_) / 2;
+    ring_y_ = std::max(0, (ring_limit - ring_size_) / 2);
+    lv_obj_set_size(arc_, ring_size_, ring_size_);
+    lv_obj_set_pos(arc_, ring_x_, ring_y_);
+    const int arc_width = std::max(6, ring_size_ / 14);
+    lv_obj_set_style_arc_width(arc_, arc_width, LV_PART_MAIN);
+    lv_obj_set_style_arc_width(arc_, arc_width, LV_PART_INDICATOR);
+
+    const int center_height = label_height;
+    lv_obj_set_width(center_, ring_size_ * 3 / 5);
+    lv_obj_set_pos(center_, ring_x_ + ring_size_ / 5, ring_y_ + (ring_size_ - center_height) / 2);
+    lv_obj_set_height(center_, center_height);
+    lv_obj_set_width(value_, width_);
+    const int value_y = std::min(height_ - value_height - unit_height, ring_y_ + ring_size_ + 4);
     lv_obj_set_pos(value_, 0, std::max(0, value_y));
-    lv_obj_set_height(value_, value_height);
+    lv_obj_set_height(value_, value_height + 2);
+    lv_obj_set_width(unit_, width_);
     lv_obj_set_pos(unit_, 0, std::max(0, value_y + value_height - 2));
     lv_obj_set_height(unit_, std::max(1, unit_height));
 
     if (available) {
-      // The ring fills over the 400–2000 ppm display range; colour follows the three bands.
+      // The ring fills over the 400–2000 ppm range; the selected threshold colours mark the three bands.
       const float fraction = std::clamp((ppm_ - 400.0f) / 1600.0f, 0.0f, 1.0f);
+      const lv_color_t color = named_color(ppm_ < low_threshold_ ? low_color_ :
+                                           (ppm_ < high_threshold_ ? mid_color_ : high_color_));
       lv_arc_set_value(arc_, static_cast<int>(std::lround(fraction * 100.0f)));
-      lv_obj_set_style_arc_color(arc_, named_color(ppm_ < low_threshold_ ? low_color_ : (ppm_ < high_threshold_ ? mid_color_ : high_color_)), LV_PART_INDICATOR);
-      lv_obj_set_style_text_color(center_, named_color(ppm_ < low_threshold_ ? low_color_ : (ppm_ < high_threshold_ ? mid_color_ : high_color_)), 0);
+      lv_obj_set_style_arc_color(arc_, color, LV_PART_INDICATOR);
+      lv_obj_set_style_text_color(center_, color, 0);
       ui::set_color(value_, theme::INK);
     } else {
       lv_arc_set_value(arc_, 0);
@@ -117,7 +151,6 @@ class Co2Tile : public tessera::Tile {
       ui::set_color(value_, theme::MUTED);
     }
   }
-
   void on_theme() override {
     ui::set_color(unit_, theme::MUTED);
     if (std::isfinite(ppm_)) {
@@ -133,6 +166,7 @@ class Co2Tile : public tessera::Tile {
   std::string sensor_hint_;
   float ppm_ = NAN;
   float low_threshold_ = 800.0f, high_threshold_ = 1200.0f;
+  int ring_scale_ = 100, value_scale_ = 180, label_scale_ = 100;
   std::string low_color_ = "green", mid_color_ = "yellow", high_color_ = "red";
   lv_obj_t *arc_ = nullptr;
   lv_obj_t *center_ = nullptr;
@@ -146,6 +180,7 @@ void Co2Ring::setup() {
 }
 
 }  // namespace esphome::co2_ring
+
 
 
 

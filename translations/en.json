@@ -22,6 +22,12 @@
     "mid_color_hint": "Colour for medium CO₂ values.",
     "high_color": "Colour at or above upper threshold",
     "high_color_hint": "Colour for high CO₂ values.",
+    "ring_scale": "Ring size",
+    "ring_scale_hint": "Make the gauge smaller than its largest fitting size.",
+    "value_scale": "PPM value size",
+    "value_scale_hint": "Scales the large number and adapts it to smaller tiles.",
+    "label_scale": "Label size",
+    "label_scale_hint": "Scales the CO2 label and ppm unit.",
     "color_green": "Green",
     "color_lime": "Lime",
     "color_teal": "Teal",
@@ -32,3 +38,4 @@
     "color_purple": "Purple"
   }
 }
+
