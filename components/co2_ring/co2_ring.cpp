@@ -126,6 +126,7 @@ class Co2Tile : public tessera::Tile {
     const int co2_zoom = co2_layout_.size * 256 / 100;
     const int unit_zoom = unit_layout_.size * 256 / 100;
     const int co2_height = (ui::line_height(tessera::Font::BODY) * co2_zoom + 255) / 256;
+    const int co2_width = ui::text_width("CO2", tessera::Font::BODY);
     const int header_bottom = 4 + co2_height + 8;
     lv_obj_set_style_transform_zoom(unit_, unit_zoom, 0);
     lv_obj_set_style_transform_zoom(center_, co2_zoom, 0);
@@ -205,13 +206,13 @@ class Co2Tile : public tessera::Tile {
       lv_obj_set_pos(unit_, ring_x_ + (ring_size_ - value_width) / 2 + value_dx + unit_dx,
                      value_y + value_dy + value_height - 1 + unit_dy);
       lv_obj_set_height(unit_, std::max(1, unit_height));
-      lv_obj_set_width(center_, std::max(1, width_ - 8));
+      lv_obj_set_width(center_, std::max(1, co2_width));
       lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_LEFT, 0);
       lv_obj_set_pos(center_, 4 + co2_dx, 4 + co2_dy);
       lv_obj_set_height(center_, co2_height);
     } else {
       // Compact tiles keep CO2 above the ring and stack the value below it.
-      lv_obj_set_width(center_, std::max(1, width_ - 8));
+      lv_obj_set_width(center_, std::max(1, co2_width));
       lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_LEFT, 0);
       lv_obj_set_pos(center_, 4 + co2_dx, 4 + co2_dy);
       lv_obj_set_height(center_, co2_height);
@@ -231,8 +232,9 @@ class Co2Tile : public tessera::Tile {
     // not visually drift sideways into the gauge.
     lv_obj_set_style_transform_pivot_x(value_, lv_obj_get_width(value_) / 2, 0);
     lv_obj_set_style_transform_pivot_y(value_, lv_obj_get_height(value_) / 2, 0);
-    lv_obj_set_style_transform_pivot_x(center_, lv_obj_get_width(center_) / 2, 0);
-    lv_obj_set_style_transform_pivot_y(center_, lv_obj_get_height(center_) / 2, 0);
+    // Keep the CO2 label anchored at its configured upper-left position as it grows.
+    lv_obj_set_style_transform_pivot_x(center_, 0, 0);
+    lv_obj_set_style_transform_pivot_y(center_, 0, 0);
     lv_obj_set_style_transform_pivot_x(unit_, lv_obj_get_width(unit_) / 2, 0);
     lv_obj_set_style_transform_pivot_y(unit_, lv_obj_get_height(unit_) / 2, 0);
 
