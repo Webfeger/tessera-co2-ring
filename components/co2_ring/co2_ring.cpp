@@ -180,6 +180,11 @@ class Co2Tile : public tessera::Tile {
       lv_obj_set_height(unit_, std::max(1, unit_height));
     }
 
+    // Keep scaling anchored at the value box's centre so a larger font does
+    // not visually drift sideways into the gauge.
+    lv_obj_set_style_transform_pivot_x(value_, lv_obj_get_width(value_) / 2, 0);
+    lv_obj_set_style_transform_pivot_y(value_, lv_obj_get_height(value_) / 2, 0);
+
     if (available) {
       // The ring fills over the 400–2000 ppm range; selected thresholds set its three colours.
       const float fraction = std::clamp((ppm_ - 400.0f) / 1600.0f, 0.0f, 1.0f);

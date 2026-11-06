@@ -1,3 +1,7 @@
+## 0.2.8
+
+- Keep the PPM value centred at every size by centring its LVGL transform pivot.
+
 ## 0.2.7
 
 - Use the screen font's supported CO2 spelling in plugin labels.
