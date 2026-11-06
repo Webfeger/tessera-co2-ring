@@ -164,18 +164,32 @@ class Co2Tile : public tessera::Tile {
     tessera::Font face = tessera::Font::VALUE;
     int rendered_value_zoom = 128;
     int best_height = 0;
-    for (tessera::Font candidate : {tessera::Font::VALUE, tessera::Font::HEADLINE, tessera::Font::TITLE}) {
-      const int base_width = ui::text_width(text, candidate);
-      const int base_height = ui::line_height(candidate);
-      if (base_width <= 0 || base_height <= 0) continue;
-      const int width_zoom = fit_width * 256 / base_width;
-      const int height_zoom = fit_height * 256 / base_height;
-      const int candidate_zoom = std::min(desired_zoom, std::min(width_zoom, height_zoom));
-      const int rendered_height = base_height * candidate_zoom / 256;
-      if (candidate_zoom >= 128 && rendered_height > best_height) {
-        face = candidate;
-        rendered_value_zoom = candidate_zoom;
-        best_height = rendered_height;
+    if (available && ui::covers(text, tessera::Font::DIGITS)) {
+      // DIGITS is Tessera's native large numeric font (64 px on the standard
+      // look). Scale it relative to VALUE's native height so the size setting
+      // keeps its meaning while needing much less enlargement.
+      face = tessera::Font::DIGITS;
+      const int digit_height = ui::line_height(face);
+      const int target_height = ui::line_height(tessera::Font::VALUE) * desired_zoom / 256;
+      const int requested_zoom = digit_height > 0 ? target_height * 256 / digit_height : 256;
+      const int base_width = ui::text_width(text, face);
+      const int width_zoom = base_width > 0 ? fit_width * 256 / base_width : 256;
+      const int height_zoom = digit_height > 0 ? fit_height * 256 / digit_height : 256;
+      rendered_value_zoom = std::max(128, std::min(requested_zoom, std::min(width_zoom, height_zoom)));
+    } else {
+      for (tessera::Font candidate : {tessera::Font::VALUE, tessera::Font::HEADLINE, tessera::Font::TITLE}) {
+        const int base_width = ui::text_width(text, candidate);
+        const int base_height = ui::line_height(candidate);
+        if (base_width <= 0 || base_height <= 0) continue;
+        const int width_zoom = fit_width * 256 / base_width;
+        const int height_zoom = fit_height * 256 / base_height;
+        const int candidate_zoom = std::min(desired_zoom, std::min(width_zoom, height_zoom));
+        const int rendered_height = base_height * candidate_zoom / 256;
+        if (candidate_zoom >= 128 && rendered_height > best_height) {
+          face = candidate;
+          rendered_value_zoom = candidate_zoom;
+          best_height = rendered_height;
+        }
       }
     }
     ui::set_font(value_, face);

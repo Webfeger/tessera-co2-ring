@@ -1,3 +1,7 @@
+## 0.2.16
+
+- Use Tessera's built-in large digit font for the PPM value.
+
 ## 0.2.15
 
 - Show the three colour ranges as a thin segmented frame along the gauge ring.
