@@ -1,5 +1,5 @@
 id: co2_ring
-version: 0.1.0
+version: 0.1.1
 api: "0.15"
 icon: molecule-co2
 maintainer: Webfeger
@@ -14,7 +14,7 @@ tiles:
   - id: co2
     name: tile_name
     icon: molecule-co2
-    sizes: { min: 1x1, max: 2x2 }
+    sizes: { min: 2x3, max: 2x3 }
     memory: 900
     example: tile_example
     options:
@@ -23,4 +23,5 @@ tiles:
         domains: [sensor]
         label: sensor
         hint: sensor_hint
+
 
