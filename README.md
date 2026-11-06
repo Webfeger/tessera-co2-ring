@@ -12,5 +12,6 @@ The gauge fills over 400–2000 ppm. Values below or above that range remain vis
 
 ## Display note
 
-The tile adapts its gauge and number to the dimensions Tessera gives it. The tile supports sizes from 1×1 through 3×3. A 1×1 tile uses the compact arrangement; larger tiles give the scale and value more room. Tessera does not expose a user-controlled font-size setting to plugin tiles, so the plugin selects the largest built-in value font that fits.
+The tile adapts its gauge and number to the dimensions Tessera gives it. The tile supports sizes from 1×1 through 2×3. A 1×1 tile uses the compact arrangement; larger tiles give the scale and value more room. Tessera does not expose a user-controlled font-size setting to plugin tiles, so the plugin selects the largest built-in value font that fits.
+
 
