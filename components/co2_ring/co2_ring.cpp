@@ -41,11 +41,38 @@ class Co2Tile : public tessera::Tile {
     if (high_threshold_ <= low_threshold_) high_threshold_ = low_threshold_ + 50.0f;
     ring_scale_ = c.options["ring_scale"] | 100;
     value_scale_ = c.options["value_scale"] | 180;
-    label_scale_ = c.options["label_scale"] | 100;
-    const std::string text_offset = c.options["text_offset"] | "0,0";
-    std::sscanf(text_offset.c_str(), "%d,%d", &text_offset_x_, &text_offset_y_);
-    text_offset_x_ = std::clamp(text_offset_x_, -50, 50);
-    text_offset_y_ = std::clamp(text_offset_y_, -50, 50);
+    const std::string label_scales = c.options["label_scales"] | "100,100";
+    std::sscanf(label_scales.c_str(), "%d,%d", &co2_scale_, &unit_scale_);
+    co2_scale_ = std::clamp(co2_scale_, 75, 150);
+    unit_scale_ = std::clamp(unit_scale_, 75, 150);
+    const std::string text_positions = c.options["text_offset"] | "0,15;0,0;0,15";
+    const size_t first_separator = text_positions.find(';');
+    const size_t second_separator = first_separator == std::string::npos
+                                        ? std::string::npos
+                                        : text_positions.find(';', first_separator + 1);
+    const std::string value_position = text_positions.substr(0, first_separator);
+    if (std::sscanf(value_position.c_str(), "%d,%d", &value_offset_x_, &value_offset_y_) == 2) {
+      value_offset_x_ = std::clamp(value_offset_x_, -50, 50);
+      value_offset_y_ = std::clamp(value_offset_y_, -50, 50);
+    }
+    if (first_separator != std::string::npos) {
+      const std::string co2_position = text_positions.substr(
+          first_separator + 1, second_separator == std::string::npos ? std::string::npos
+                                                                      : second_separator - first_separator - 1);
+      int x = 0, y = 0;
+      if (std::sscanf(co2_position.c_str(), "%d,%d", &x, &y) == 2) {
+        co2_offset_x_ = std::clamp(x, -50, 50);
+        co2_offset_y_ = std::clamp(y, -50, 50);
+      }
+    }
+    if (second_separator != std::string::npos) {
+      const std::string unit_position = text_positions.substr(second_separator + 1);
+      int x = 0, y = 0;
+      if (std::sscanf(unit_position.c_str(), "%d,%d", &x, &y) == 2) {
+        unit_offset_x_ = std::clamp(x, -50, 50);
+        unit_offset_y_ = std::clamp(y, -50, 50);
+      }
+    }
 
     // Gauge size follows the tile dimensions, with the large value kept below it.
     ring_size_ = std::max(48, std::min(width_ - 10, height_ - 64));
@@ -97,9 +124,10 @@ class Co2Tile : public tessera::Tile {
     const std::string text = available ? std::to_string(static_cast<int>(std::lround(ppm_))) :
         (sensor_hint_.empty() ? plugin_->text("choose_sensor") : plugin_->text("unavailable"));
     const bool centered_gauge = width_ >= 220 && height_ >= 145;
-    const int label_zoom = std::clamp(label_scale_, 75, 150) * 256 / 100;
-    lv_obj_set_style_transform_zoom(unit_, label_zoom, 0);
-    lv_obj_set_style_transform_zoom(center_, label_zoom, 0);
+    const int co2_zoom = co2_scale_ * 256 / 100;
+    const int unit_zoom = unit_scale_ * 256 / 100;
+    lv_obj_set_style_transform_zoom(unit_, unit_zoom, 0);
+    lv_obj_set_style_transform_zoom(center_, co2_zoom, 0);
     ui::set_text(unit_, available ? plugin_->text("ppm") : "");
     ui::set_text(center_, available ? "CO2" : "");
 
@@ -138,10 +166,14 @@ class Co2Tile : public tessera::Tile {
     lv_obj_set_style_transform_zoom(value_, value_zoom, 0);
 
     const int value_height = (ui::line_height(face) * value_zoom + 255) / 256;
-    const int label_height = (ui::line_height(tessera::Font::BODY) * label_zoom + 255) / 256;
-    const int unit_height = available ? label_height : 0;
-    const int text_dx = width_ * text_offset_x_ / 100;
-    const int text_dy = height_ * text_offset_y_ / 100;
+    const int co2_height = (ui::line_height(tessera::Font::BODY) * co2_zoom + 255) / 256;
+    const int unit_height = available ? (ui::line_height(tessera::Font::BODY) * unit_zoom + 255) / 256 : 0;
+    const int value_dx = width_ * value_offset_x_ / 100;
+    const int value_dy = height_ * value_offset_y_ / 100;
+    const int co2_dx = width_ * co2_offset_x_ / 100;
+    const int co2_dy = height_ * co2_offset_y_ / 100;
+    const int unit_dx = width_ * unit_offset_x_ / 100;
+    const int unit_dy = height_ * unit_offset_y_ / 100;
     if (!centered_gauge) {
       ring_limit = std::max(48, std::min(width_ - 10, height_ - value_height - unit_height - 18));
       ring_size_ = std::max(48, ring_limit * std::clamp(ring_scale_, 50, 100) / 100);
@@ -162,34 +194,34 @@ class Co2Tile : public tessera::Tile {
       lv_obj_set_style_text_align(value_, LV_TEXT_ALIGN_CENTER, 0);
       const int group_height = value_height + unit_height;
       const int value_y = ring_y_ + (ring_size_ - group_height) / 2;
-      lv_obj_set_pos(value_, ring_x_ + (ring_size_ - value_width) / 2 + text_dx, value_y + text_dy);
+      lv_obj_set_pos(value_, ring_x_ + (ring_size_ - value_width) / 2 + value_dx, value_y + value_dy);
       lv_obj_set_height(value_, value_height + 2);
       lv_obj_set_width(unit_, value_width);
       lv_obj_set_style_text_align(unit_, LV_TEXT_ALIGN_CENTER, 0);
-      lv_obj_set_pos(unit_, ring_x_ + (ring_size_ - value_width) / 2 + text_dx,
-                     value_y + value_height - 1 + text_dy);
+      lv_obj_set_pos(unit_, ring_x_ + (ring_size_ - value_width) / 2 + unit_dx,
+                     value_y + value_height - 1 + unit_dy);
       lv_obj_set_height(unit_, std::max(1, unit_height));
       const int co2_width = ring_size_ * 48 / 100;
       lv_obj_set_width(center_, co2_width);
       lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_LEFT, 0);
-      lv_obj_set_pos(center_, ring_x_ + ring_size_ * 23 / 100 + text_dx,
-                     ring_y_ + ring_size_ * 18 / 100 + text_dy);
-      lv_obj_set_height(center_, label_height);
+      lv_obj_set_pos(center_, ring_x_ + ring_size_ * 23 / 100 + co2_dx,
+                     ring_y_ + ring_size_ * 18 / 100 + co2_dy);
+      lv_obj_set_height(center_, co2_height);
     } else {
       // Compact tiles stack the ring, value and unit.
       lv_obj_set_width(center_, ring_size_ * 3 / 5);
       lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_CENTER, 0);
-      lv_obj_set_pos(center_, ring_x_ + ring_size_ / 5 + text_dx,
-                     ring_y_ + (ring_size_ - label_height) / 2 + text_dy);
-      lv_obj_set_height(center_, label_height);
+      lv_obj_set_pos(center_, ring_x_ + ring_size_ / 5 + co2_dx,
+                     ring_y_ + (ring_size_ - co2_height) / 2 + co2_dy);
+      lv_obj_set_height(center_, co2_height);
       lv_obj_set_width(value_, width_);
       lv_obj_set_style_text_align(value_, LV_TEXT_ALIGN_CENTER, 0);
       const int value_y = std::min(height_ - value_height - unit_height, ring_y_ + ring_size_ + 4);
-      lv_obj_set_pos(value_, text_dx, std::max(0, value_y + text_dy));
+      lv_obj_set_pos(value_, value_dx, std::max(0, value_y + value_dy));
       lv_obj_set_height(value_, value_height + 2);
       lv_obj_set_width(unit_, width_);
       lv_obj_set_style_text_align(unit_, LV_TEXT_ALIGN_CENTER, 0);
-      lv_obj_set_pos(unit_, text_dx, std::max(0, value_y + value_height - 2 + text_dy));
+      lv_obj_set_pos(unit_, unit_dx, std::max(0, value_y + value_height - 2 + unit_dy));
       lv_obj_set_height(unit_, std::max(1, unit_height));
     }
 
@@ -203,7 +235,7 @@ class Co2Tile : public tessera::Tile {
     lv_obj_set_style_transform_pivot_y(unit_, lv_obj_get_height(unit_) / 2, 0);
 
     if (available) {
-      // The ring fills over the 400–2000 ppm range; selected thresholds set its three colours.
+      // The configured ring range sets progress; colour thresholds select its three colours.
       const float fraction = std::clamp((ppm_ - ring_min_) / (ring_max_ - ring_min_), 0.0f, 1.0f);
       const lv_color_t color = named_color(ppm_ < low_threshold_ ? low_color_ :
                                            (ppm_ < high_threshold_ ? mid_color_ : high_color_));
@@ -236,8 +268,9 @@ class Co2Tile : public tessera::Tile {
   float ppm_ = NAN;
   float low_threshold_ = 800.0f, high_threshold_ = 1200.0f;
   float ring_min_ = 400.0f, ring_max_ = 2000.0f;
-  int ring_scale_ = 100, value_scale_ = 180, label_scale_ = 100;
-  int text_offset_x_ = 0, text_offset_y_ = 0;
+  int ring_scale_ = 100, value_scale_ = 180, co2_scale_ = 100, unit_scale_ = 100;
+  int value_offset_x_ = 0, value_offset_y_ = 15;
+  int co2_offset_x_ = 0, co2_offset_y_ = 0, unit_offset_x_ = 0, unit_offset_y_ = 15;
   std::string low_color_ = "green", mid_color_ = "yellow", high_color_ = "red";
   lv_obj_t *arc_ = nullptr;
   lv_obj_t *center_ = nullptr;

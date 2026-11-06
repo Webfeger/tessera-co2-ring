@@ -1,3 +1,8 @@
+## 0.2.12
+
+- Move the ppm value, CO2 label and ppm unit independently.
+- Set separate text sizes for the CO2 label and ppm unit.
+
 ## 0.2.11
 
 - Set the ring's start and full values, defaulting to 400–2000 ppm.
