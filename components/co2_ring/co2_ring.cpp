@@ -43,16 +43,16 @@ class Co2Tile : public tessera::Tile {
     lv_obj_set_style_opa(arc_, LV_OPA_TRANSP, LV_PART_KNOB);
     lv_obj_remove_flag(arc_, LV_OBJ_FLAG_CLICKABLE);
 
-    center_ = ui::label(c.parent, tessera::Font::BODY, lv_color_hex(0x42B85A));
+    center_ = ui::label(c.parent, tessera::Font::BODY, theme::INK);
     lv_obj_set_width(center_, ring_size_ * 3 / 5);
     lv_obj_set_style_text_align(center_, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_pos(center_, ring_x_ + ring_size_ / 5, ring_y_ + (ring_size_ - ui::line_height(tessera::Font::BODY)) / 2);
     lv_obj_set_height(center_, ui::line_height(tessera::Font::BODY));
 
-    value_ = ui::label(c.parent, tessera::Font::VALUE, lv_color_hex(0x17191C));
+    value_ = ui::label(c.parent, tessera::Font::VALUE, theme::INK);
     lv_obj_set_width(value_, width_);
     lv_obj_set_style_text_align(value_, LV_TEXT_ALIGN_CENTER, 0);
-    unit_ = ui::label(c.parent, tessera::Font::BODY, lv_color_hex(0x60656B));
+    unit_ = ui::label(c.parent, tessera::Font::BODY, theme::MUTED);
     lv_obj_set_width(unit_, width_);
     lv_obj_set_style_text_align(unit_, LV_TEXT_ALIGN_CENTER, 0);
   }
@@ -97,13 +97,13 @@ class Co2Tile : public tessera::Tile {
       const float fraction = std::clamp((ppm_ - 400.0f) / 1600.0f, 0.0f, 1.0f);
       lv_arc_set_value(arc_, static_cast<int>(std::lround(fraction * 100.0f)));
       lv_obj_set_style_arc_color(arc_, level_color(ppm_), LV_PART_INDICATOR);
-      ui::set_color(center_, level_color(ppm_));
-      ui::set_color(value_, lv_color_hex(0x17191C));
+      lv_obj_set_style_text_color(center_, level_color(ppm_), 0);
+      ui::set_color(value_, theme::INK);
     } else {
       lv_arc_set_value(arc_, 0);
       lv_obj_set_style_arc_color(arc_, lv_color_hex(0xA6ABB0), LV_PART_INDICATOR);
-      ui::set_color(center_, lv_color_hex(0xA6ABB0));
-      ui::set_color(value_, lv_color_hex(0x60656B));
+      ui::set_color(center_, theme::MUTED);
+      ui::set_color(value_, theme::MUTED);
     }
   }
 
@@ -111,7 +111,7 @@ class Co2Tile : public tessera::Tile {
     ui::set_color(unit_, theme::MUTED);
     if (std::isfinite(ppm_)) {
       ui::set_color(value_, theme::INK);
-      ui::set_color(center_, level_color(ppm_));
+      lv_obj_set_style_text_color(center_, level_color(ppm_), 0);
       lv_obj_set_style_arc_color(arc_, level_color(ppm_), LV_PART_INDICATOR);
     }
   }
@@ -133,5 +133,6 @@ void Co2Ring::setup() {
 }
 
 }  // namespace esphome::co2_ring
+
 
 
