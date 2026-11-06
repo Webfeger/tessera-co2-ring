@@ -1,3 +1,8 @@
+## 0.2.13
+
+- Give the PPM value, CO2 label and ppm unit separate X;Y;size settings; place CO2 above the ring.
+- Group the colour thresholds and ring range into semicolon-separated pairs.
+
 ## 0.2.12
 
 - Move the ppm value, CO2 label and ppm unit independently.

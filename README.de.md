@@ -2,6 +2,6 @@
 
 A Tessera plugin for a Home Assistant CO₂ sensor. The tile shows a large ppm value and a colour ring on a black background.
 
-In den Tile-Optionen legst du Ring-Minimum und -Maximum (Standard: 400–2000 ppm), Farbschwellen, Farben sowie Ring- und Textgrößen fest. **Textgrößen (CO2, ppm)** nimmt zwei Prozentwerte entgegen, z. B. `100,120`. **Textpositionen (Wert; CO2; ppm)** nimmt drei X,Y-Paare entgegen, z. B. `0,15;0,0;0,15`. Positive X-Werte verschieben nach rechts, positive Y-Werte nach unten. Die große PPM-Zahl hat weiterhin die eigene Einstellung **Größe des ppm-Werts**.
+In den Tile-Optionen gibst du **Lower; Upper Threshold** als `untere;obere Schwelle` (Standard `800;1200`) und den **Ringbereich** als `Minimum;Maximum` (Standard `400;2000`) ein. Für jeden Text gibt es ein eigenes Feld `X;Y;Textgröße`: **PPM-Wert** (`0;15;180`), **CO2** (`0;0;100`) und **ppm** (`0;0;100`). X/Y verschieben relativ zur Kachelgröße; CO2 steht standardmäßig oben links außerhalb des Rings. Der Kachelhintergrund ist schwarz.
 
 Tile sizes depend on the screen grid and Tessera's layout rules. Plugin tiles cannot currently occupy an entire page.
