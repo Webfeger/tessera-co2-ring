@@ -25,7 +25,7 @@ class Co2Tile : public tessera::Tile {
     sensor_hint_ = c.options["sensor"] | "";
 
     // Gauge size follows the tile dimensions, with the large value kept below it.
-    ring_size_ = std::max(68, std::min(width_ - 10, height_ - 66));
+    ring_size_ = std::max(48, std::min(width_ - 10, height_ - 64));
     ring_x_ = (width_ - ring_size_) / 2;
     ring_y_ = std::max(0, (height_ - ring_size_ - 58) / 2);
 
@@ -133,6 +133,7 @@ void Co2Ring::setup() {
 }
 
 }  // namespace esphome::co2_ring
+
 
 
 
