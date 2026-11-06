@@ -1,5 +1,5 @@
 id: co2_ring
-version: 0.2.3
+version: 0.2.5
 api: "0.15"
 icon: molecule-co2
 maintainer: Webfeger
@@ -14,7 +14,7 @@ tiles:
   - id: co2
     name: tile_name
     icon: molecule-co2
-    sizes: { min: 1x1, max: 3x3 }
+    sizes: { min: 1x1, max: 4x4 }
     memory: 900
     example: tile_example
     options:
@@ -27,6 +27,8 @@ tiles:
       - { id: ring_scale, kind: number, min: 50, max: 100, step: 5, unit: "%", default: 100, label: ring_scale, hint: ring_scale_hint }
       - { id: value_scale, kind: number, min: 100, max: 200, step: 10, unit: "%", default: 180, label: value_scale, hint: value_scale_hint }
       - { id: label_scale, kind: number, min: 75, max: 150, step: 5, unit: "%", default: 100, label: label_scale, hint: label_scale_hint }
+
+
 
 
 

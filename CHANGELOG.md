@@ -1,3 +1,12 @@
+## 0.2.5
+
+- Put the ppm reading in the gauge on larger tiles, with CO2 and ppm labels beside it.
+- Keep the stacked layout on compact tiles.
+
+## 0.2.4
+
+- Raise the declared maximum tile size to 4x4 so Tessera can offer the full page on smaller grids.
+
 ## 0.2.3
 
 - Quote percent signs in the size option units so the plugin manifest parses as YAML.
@@ -12,6 +21,8 @@
 - Add per-tile lower and upper ppm thresholds and selectable colours for all three ranges.
 - Expand the entity picker to sensor, air_quality and number domains.
 - Keep tile sizes from 1x1 through the display's maximum 2x3 grid.
+
+
 
 
 
