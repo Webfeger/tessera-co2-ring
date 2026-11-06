@@ -1,18 +1,34 @@
 {
-"_meta": { "name": "Deutsch" },
-"screen": {
-  "choose_sensor": "Sensor wählen",
-  "unavailable": "Keine Messung",
-  "ppm": "ppm"
-},
-"app": {
-  "name": "CO₂ Ring",
-  "summary": "CO₂-Konzentration mit farbigem Ringskala und großem ppm-Wert.",
-  "tile_name": "CO₂ Ring",
-  "tile_example": "734 ppm",
-  "sensor": "CO₂-Sensor",
-  "sensor_hint": "Wähle den CO₂-Sensor für diese Kachel."
-}
-
-
+  "_meta": { "name": "Deutsch" },
+  "screen": {
+    "choose_sensor": "Sensor wählen",
+    "unavailable": "Keine Messung",
+    "ppm": "ppm"
+  },
+  "app": {
+    "name": "CO₂ Ring",
+    "summary": "CO₂-Konzentration mit farbiger Ringskala und großem ppm-Wert.",
+    "tile_name": "CO₂ Ring",
+    "tile_example": "734 ppm",
+    "sensor": "CO₂-Sensor",
+    "sensor_hint": "Wähle einen Sensor, eine Air-Quality-Entität oder einen Zahlenwert.",
+    "low_threshold": "Untere Schwelle",
+    "low_threshold_hint": "Bis zu diesem Wert gilt die erste Farbe.",
+    "high_threshold": "Obere Schwelle",
+    "high_threshold_hint": "Ab diesem Wert gilt die dritte Farbe.",
+    "low_color": "Farbe unter der unteren Schwelle",
+    "low_color_hint": "Farbe für niedrige CO₂-Werte.",
+    "mid_color": "Farbe zwischen den Schwellen",
+    "mid_color_hint": "Farbe für mittlere CO₂-Werte.",
+    "high_color": "Farbe ab der oberen Schwelle",
+    "high_color_hint": "Farbe für hohe CO₂-Werte.",
+    "color_green": "Grün",
+    "color_lime": "Hellgrün",
+    "color_teal": "Türkis",
+    "color_blue": "Blau",
+    "color_yellow": "Gelb",
+    "color_orange": "Orange",
+    "color_red": "Rot",
+    "color_purple": "Violett"
+  }
 }

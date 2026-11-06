@@ -10,7 +10,25 @@
     "summary": "CO₂ concentration with a colour ring and a large ppm value.",
     "tile_name": "CO₂ Ring",
     "tile_example": "734 ppm",
-    "sensor": "CO₂ sensor",
-    "sensor_hint": "Choose the CO₂ sensor for this tile."
+    "sensor": "CO₂ source",
+    "sensor_hint": "Choose a sensor, air quality entity or number entity.",
+    "low_threshold": "Lower threshold",
+    "low_threshold_hint": "Values below this use the first colour.",
+    "high_threshold": "Upper threshold",
+    "high_threshold_hint": "Values at or above this use the third colour.",
+    "low_color": "Colour below lower threshold",
+    "low_color_hint": "Colour for low CO₂ values.",
+    "mid_color": "Colour between thresholds",
+    "mid_color_hint": "Colour for medium CO₂ values.",
+    "high_color": "Colour at or above upper threshold",
+    "high_color_hint": "Colour for high CO₂ values.",
+    "color_green": "Green",
+    "color_lime": "Lime",
+    "color_teal": "Teal",
+    "color_blue": "Blue",
+    "color_yellow": "Yellow",
+    "color_orange": "Orange",
+    "color_red": "Red",
+    "color_purple": "Purple"
   }
 }

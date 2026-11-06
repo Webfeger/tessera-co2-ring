@@ -9,10 +9,15 @@ namespace esphome::co2_ring {
 namespace {
 namespace ui = tessera::ui;
 
-static lv_color_t level_color(float ppm) {
-  if (ppm < 800.0f) return lv_color_hex(0x42B85A);   // good
-  if (ppm < 1200.0f) return lv_color_hex(0xE1BD32);  // elevated
-  return lv_color_hex(0xD94A4A);                     // high
+static lv_color_t named_color(const std::string &name) {
+  if (name == "green") return lv_color_hex(0x42B85A);
+  if (name == "lime") return lv_color_hex(0x9BCB3C);
+  if (name == "teal") return lv_color_hex(0x26A69A);
+  if (name == "blue") return lv_color_hex(0x4386D8);
+  if (name == "orange") return lv_color_hex(0xE68A2E);
+  if (name == "red") return lv_color_hex(0xD94A4A);
+  if (name == "purple") return lv_color_hex(0x9059B5);
+  return lv_color_hex(0xE1BD32);  // yellow, and the safe default
 }
 
 class Co2Tile : public tessera::Tile {
@@ -23,6 +28,12 @@ class Co2Tile : public tessera::Tile {
     width_ = c.width;
     height_ = c.height;
     sensor_hint_ = c.options["sensor"] | "";
+    low_threshold_ = c.options["low_threshold"] | 800.0f;
+    high_threshold_ = c.options["high_threshold"] | 1200.0f;
+    low_color_ = c.options["low_color"] | "green";
+    mid_color_ = c.options["mid_color"] | "yellow";
+    high_color_ = c.options["high_color"] | "red";
+    if (high_threshold_ <= low_threshold_) high_threshold_ = low_threshold_ + 50.0f;
 
     // Gauge size follows the tile dimensions, with the large value kept below it.
     ring_size_ = std::max(48, std::min(width_ - 10, height_ - 64));
@@ -96,8 +107,8 @@ class Co2Tile : public tessera::Tile {
       // The ring fills over the 400–2000 ppm display range; colour follows the three bands.
       const float fraction = std::clamp((ppm_ - 400.0f) / 1600.0f, 0.0f, 1.0f);
       lv_arc_set_value(arc_, static_cast<int>(std::lround(fraction * 100.0f)));
-      lv_obj_set_style_arc_color(arc_, level_color(ppm_), LV_PART_INDICATOR);
-      lv_obj_set_style_text_color(center_, level_color(ppm_), 0);
+      lv_obj_set_style_arc_color(arc_, named_color(ppm_ < low_threshold_ ? low_color_ : (ppm_ < high_threshold_ ? mid_color_ : high_color_)), LV_PART_INDICATOR);
+      lv_obj_set_style_text_color(center_, named_color(ppm_ < low_threshold_ ? low_color_ : (ppm_ < high_threshold_ ? mid_color_ : high_color_)), 0);
       ui::set_color(value_, theme::INK);
     } else {
       lv_arc_set_value(arc_, 0);
@@ -111,8 +122,8 @@ class Co2Tile : public tessera::Tile {
     ui::set_color(unit_, theme::MUTED);
     if (std::isfinite(ppm_)) {
       ui::set_color(value_, theme::INK);
-      lv_obj_set_style_text_color(center_, level_color(ppm_), 0);
-      lv_obj_set_style_arc_color(arc_, level_color(ppm_), LV_PART_INDICATOR);
+      lv_obj_set_style_text_color(center_, named_color(ppm_ < low_threshold_ ? low_color_ : (ppm_ < high_threshold_ ? mid_color_ : high_color_)), 0);
+      lv_obj_set_style_arc_color(arc_, named_color(ppm_ < low_threshold_ ? low_color_ : (ppm_ < high_threshold_ ? mid_color_ : high_color_)), LV_PART_INDICATOR);
     }
   }
 
@@ -121,6 +132,8 @@ class Co2Tile : public tessera::Tile {
   int width_ = 0, height_ = 0, ring_size_ = 0, ring_x_ = 0, ring_y_ = 0;
   std::string sensor_hint_;
   float ppm_ = NAN;
+  float low_threshold_ = 800.0f, high_threshold_ = 1200.0f;
+  std::string low_color_ = "green", mid_color_ = "yellow", high_color_ = "red";
   lv_obj_t *arc_ = nullptr;
   lv_obj_t *center_ = nullptr;
   lv_obj_t *value_ = nullptr;
@@ -133,6 +146,7 @@ void Co2Ring::setup() {
 }
 
 }  // namespace esphome::co2_ring
+
 
 
 
