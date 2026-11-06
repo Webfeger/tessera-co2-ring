@@ -1,3 +1,7 @@
+## 0.2.3
+
+- Quote percent signs in the size option units so the plugin manifest parses as YAML.
+
 ## 0.2.2
 
 - Add adjustable ring, ppm number and label sizes; enlarge the default ppm number.
@@ -8,6 +12,7 @@
 - Add per-tile lower and upper ppm thresholds and selectable colours for all three ranges.
 - Expand the entity picker to sensor, air_quality and number domains.
 - Keep tile sizes from 1x1 through the display's maximum 2x3 grid.
+
 
 
 

@@ -1,5 +1,5 @@
 id: co2_ring
-version: 0.2.2
+version: 0.2.3
 api: "0.15"
 icon: molecule-co2
 maintainer: Webfeger
@@ -24,9 +24,11 @@ tiles:
       - { id: low_color, kind: choice, choices: [{ value: green, label: color_green }, { value: lime, label: color_lime }, { value: teal, label: color_teal }, { value: blue, label: color_blue }, { value: yellow, label: color_yellow }, { value: orange, label: color_orange }, { value: red, label: color_red }, { value: purple, label: color_purple }], default: green, label: low_color, hint: low_color_hint }
       - { id: mid_color, kind: choice, choices: [{ value: green, label: color_green }, { value: lime, label: color_lime }, { value: teal, label: color_teal }, { value: blue, label: color_blue }, { value: yellow, label: color_yellow }, { value: orange, label: color_orange }, { value: red, label: color_red }, { value: purple, label: color_purple }], default: yellow, label: mid_color, hint: mid_color_hint }
       - { id: high_color, kind: choice, choices: [{ value: green, label: color_green }, { value: lime, label: color_lime }, { value: teal, label: color_teal }, { value: blue, label: color_blue }, { value: yellow, label: color_yellow }, { value: orange, label: color_orange }, { value: red, label: color_red }, { value: purple, label: color_purple }], default: red, label: high_color, hint: high_color_hint }
-      - { id: ring_scale, kind: number, min: 50, max: 100, step: 5, unit: %, default: 100, label: ring_scale, hint: ring_scale_hint }
-      - { id: value_scale, kind: number, min: 100, max: 200, step: 10, unit: %, default: 180, label: value_scale, hint: value_scale_hint }
-      - { id: label_scale, kind: number, min: 75, max: 150, step: 5, unit: %, default: 100, label: label_scale, hint: label_scale_hint }
+      - { id: ring_scale, kind: number, min: 50, max: 100, step: 5, unit: "%", default: 100, label: ring_scale, hint: ring_scale_hint }
+      - { id: value_scale, kind: number, min: 100, max: 200, step: 10, unit: "%", default: 180, label: value_scale, hint: value_scale_hint }
+      - { id: label_scale, kind: number, min: 75, max: 150, step: 5, unit: "%", default: 100, label: label_scale, hint: label_scale_hint }
+
+
 
 
 
