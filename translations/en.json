@@ -1,0 +1,16 @@
+{
+  "_meta": { "name": "English" },
+  "screen": {
+    "choose_sensor": "Choose a sensor",
+    "unavailable": "No reading",
+    "ppm": "ppm"
+  },
+  "app": {
+    "name": "CO₂ Ring",
+    "summary": "CO₂ concentration with a colour ring and a large ppm value.",
+    "tile_name": "CO₂ Ring",
+    "tile_example": "734 ppm",
+    "sensor": "CO₂ sensor",
+    "sensor_hint": "Choose the CO₂ sensor for this tile."
+  }
+}

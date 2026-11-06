@@ -1,0 +1,14 @@
+"_meta": { "name": "Deutsch" },
+"screen": {
+  "choose_sensor": "Sensor wählen",
+  "unavailable": "Keine Messung",
+  "ppm": "ppm"
+},
+"app": {
+  "name": "CO₂ Ring",
+  "summary": "CO₂-Konzentration mit farbigem Ringskala und großem ppm-Wert.",
+  "tile_name": "CO₂ Ring",
+  "tile_example": "734 ppm",
+  "sensor": "CO₂-Sensor",
+  "sensor_hint": "Wähle den CO₂-Sensor für diese Kachel."
+}
