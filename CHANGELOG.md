@@ -1,3 +1,7 @@
+## 0.2.17
+
+- Internal code cleanup; no visible changes.
+
 ## 0.2.16
 
 - Use Tessera's built-in large digit font for the PPM value.
