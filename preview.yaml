@@ -1,0 +1,15 @@
+# Sample entities and tile sizes for tools/preview.py in tessera-plugins.
+tiles:
+  - tile: co2
+    name: Air-Q
+    entity: sensor.co2_preview
+    options: { sensor: sensor.co2_preview }
+    sizes: [1x1, 1x2, 1x3, 2x1, 2x2, 2x3, 3x3]
+
+states:
+  sensor.co2_preview:
+    state: "972"
+    attributes:
+      unit_of_measurement: ppm
+      device_class: carbon_dioxide
+      icon: mdi:molecule-co2

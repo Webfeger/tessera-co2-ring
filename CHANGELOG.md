@@ -1,3 +1,8 @@
+## 0.2.9
+
+- Add entity domains and sample preview data so Tessera can draw the tile from a CO2 sensor.
+- Include 2x3 and other tile sizes in the firmware preview bench.
+
 ## 0.2.8
 
 - Keep the PPM value centred at every size by centring its LVGL transform pivot.
